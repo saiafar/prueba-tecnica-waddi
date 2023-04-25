@@ -3,10 +3,11 @@ import { User } from "../models/User.js";
 
 const auth =  async (req, res, next) => {
     try {
-        const token = req.headers["x-access-token"];
-        if(!token)
-            return res.status(403).json({message: "Access denied"})
-
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return res.status(401).send('Unauthorized');
+        }
+        const token = authHeader.split(' ')[1];
         const  verify = jwt.verify(token, process.env.SECRET_KEY);
         const user = await User.findByPk(verify.id,
             {
@@ -20,7 +21,7 @@ const auth =  async (req, res, next) => {
         req.userAuth = user;
         next();
     } catch (error){
-        if (err instanceof jwt.JsonWebTokenError)
+        if (error instanceof jwt.JsonWebTokenError)
             return res.status(401).json({message:"Error invalid Token"})
         return res.status(403).json({message:"Access denied"})
     }

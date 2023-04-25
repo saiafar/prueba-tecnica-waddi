@@ -1,3 +1,4 @@
+import "dotenv/config.js";
 import Sequelize  from 'sequelize'
 
 export const sequelize = new Sequelize(
@@ -6,6 +7,7 @@ export const sequelize = new Sequelize(
     process.env.PASS_DB, 
     {
     host: process.env.HOST_DB,
-    dialect: "postgres"
+    dialect: "postgres",
+    logging: false
     }
 );

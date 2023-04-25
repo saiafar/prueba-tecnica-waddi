@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
 import { User } from "../models/User.js";
+import roles from "../helpers/roles.js";
 
 export const login = async (req, res) => {
     try {
@@ -14,7 +15,7 @@ export const login = async (req, res) => {
             where: {
                 username
             }
-        })
+        });
         
         if(!user)
             return res.status(400).json({message:"Wrong credentials"});
@@ -26,10 +27,46 @@ export const login = async (req, res) => {
         
         const token = await jwt.sign({ id: user.id }, process.env.SECRET_KEY, {
             expiresIn: process.env.JWT_EXPIRE,
-        }) 
-        user.token = token;
-        res.status(200).json(token);
+        });
+        res.status(200).json({
+            username: user.username,
+            token: token
+        });
     } catch (error) {
         return res.status(500).json({message: error.message})
     }
+}
+
+export const register = async (req, res) => {
+    try{
+        const { username, password, role } = req.body
+
+        if(!username || !password || !role )
+            return res.status(400).json( {message: "all input is required"} );
+        
+        if(!(role in roles)){
+            return res.status(400).json({message: "Error in role value"});
+        }
+        const user = await User.findOne({
+            where: {
+                username
+            }
+        })
+
+        if(user) 
+            return res.status(400).json({message: "Username already exist"});
+        
+        const salt = await bcrypt.genSalt(10);
+        const hashPassword = await bcrypt.hash(password, salt);
+        
+        const newUser = await User.create({
+            username,
+            password: hashPassword,
+            role
+        })
+        res.json(newUser);
+    }catch ( error ) {
+        return res.status(500).json({message: error.message})
+    }
+    
 }

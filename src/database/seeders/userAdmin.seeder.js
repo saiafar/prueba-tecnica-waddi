@@ -5,11 +5,6 @@ import Roles from "../../helpers/roles.js";
 export const userAdminSeeder = async () => {
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash("admin.pass23", salt);
-    /*const userAdmin = await User.findOne({
-        where: {
-            username: "Administrador"
-        }
-    });*/
     try {
         await User.create({
             username: "Administrador",
