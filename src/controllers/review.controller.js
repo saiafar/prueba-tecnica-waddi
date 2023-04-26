@@ -33,6 +33,7 @@ export const createReview = async (req, res) => {
         })
         res.json(newReview);
     } catch (error) {
+        console.log(error.message);
         return res.status(500).json({message: error.message})
     }   
 }

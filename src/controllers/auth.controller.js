@@ -19,7 +19,7 @@ export const login = async (req, res) => {
         
         if(!user)
             return res.status(400).json({message:"Wrong credentials"});
-
+            
         const isPassMatched = await bcrypt.compare(password, user.password);
         
         if(!isPassMatched)

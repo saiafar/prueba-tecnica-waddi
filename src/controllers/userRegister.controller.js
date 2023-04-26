@@ -13,7 +13,6 @@ export const createUserRegister = async (req, res, postId, action) =>{
             postId
         });    
     } catch (error) {
-        console.log(error);
         return res.status(500).json({message: "Internal Error"})
     }
 }
@@ -27,7 +26,6 @@ export const userRegisters = async (req, res) =>{
 
         return res.send(uRegisters);
     } catch (error) {
-        console.log(error);
         return res.status(500).json({message: "Internal Error"})
     }
     

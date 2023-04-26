@@ -7,6 +7,7 @@ const isAuth =  async (req, res, next) => {
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
             next();
+            return false;
         }
         const token = authHeader.split(' ')[1];
         const  verify = jwt.verify(token, process.env.SECRET_KEY);
